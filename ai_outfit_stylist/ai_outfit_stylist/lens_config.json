@@ -1,0 +1,25 @@
+{
+  "active_index": 0,
+  "lenses": [
+    {
+      "name": "Lens 1 - Half Sleeves Tshirt",
+      "lens_id": "dff6769f-cdca-4bd8-af1c-b8f4d070ba2d",
+      "web_url": "https://lens.snap.com/experience/b84e835f-752a-405a-9251-7a4682626007"
+    },
+    {
+      "name": "Lens 2 - Full Sleeves Tshirt",
+      "lens_id": "62243f43-c5dd-4bdd-b71c-a5b87bc1811d",
+      "web_url": "https://lens.snap.com/experience/30e74e35-318e-4beb-9ed3-6cb7f29b0cf8"
+    },
+    {
+      "name": "Lens 3 - Flora Dress",
+      "lens_id": "912e9824-04df-43e2-9b4a-784316d673a7",
+      "web_url": "https://lens.snap.com/experience/21f7d20d-a5bf-4b4b-8bd3-8bba967e91d0"
+    },
+    {
+      "name": "Lens 4 - Hoodie",
+      "lens_id": "7256c89e-b535-4be0-ace9-ba54dc8999d2",
+      "web_url": "https://lens.snap.com/experience/74a6860c-3f40-4295-85b1-496342c03e1e"
+    }
+  ]
+}

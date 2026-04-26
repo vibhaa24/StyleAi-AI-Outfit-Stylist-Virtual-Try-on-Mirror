@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StyleAI — Virtual Outfit Stylist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<!-- ── NOISE OVERLAY ── -->
+<div class="noise-overlay"></div>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <div class="nav-logo">
+    <span class="logo-icon">✦</span>
+    <span class="logo-text">StyleAI</span>
+  </div>
+  <div class="nav-links">
+    <a href="#stylist" class="nav-link">Stylist</a>
+    <a href="#catalog" class="nav-link">Catalog</a>
+    <a href="#tryon" class="nav-link ar-btn">AR Try-On</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg-circle c1"></div>
+  <div class="hero-bg-circle c2"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Powered by AI + Augmented Reality</p>
+    <h1 class="hero-title">
+      Dress <em>smarter.</em><br/>Try on <em>virtually.</em>
+    </h1>
+    <p class="hero-sub">AI-powered outfit recommendations tailored to your body, style, and mood — with real-time AR try-on.</p>
+    <div class="hero-cta">
+      <!-- <button type="button" class="btn-primary" onclick="scrollToSection('stylist')">Get My Recommendations</button> -->
+       <button class="btn-primary btn-hero-rec">
+  Get My Recommendations
+</button>
+      <button type="button" class="btn-outline" onclick="scrollToSection('tryon')">▶ Try On Now</button>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="mirror-frame">
+      <div class="mirror-glass">
+        <div class="mirror-reflection">
+          <span class="mirror-icon">👗</span>
+          <p>Your Virtual Mirror</p>
+        </div>
+      </div>
+      <div class="mirror-stand"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STYLIST SECTION ── -->
+<section class="section" id="stylist">
+  <div class="section-header">
+    <span class="section-tag">01 — AI Stylist</span>
+    <h2 class="section-title">Tell us your style</h2>
+    <p class="section-sub">Answer a few quick questions and our AI will curate the perfect outfits for you.</p>
+  </div>
+
+  <div class="stylist-container">
+    <!-- Upload Photo -->
+    <div class="upload-card card">
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('photoInput').click()">
+        <div class="upload-icon">📸</div>
+        <p class="upload-text">Upload your photo</p>
+        <p class="upload-sub">We'll analyze your skin tone & suggest complementary colors</p>
+        <input type="file" id="photoInput" accept="image/*" hidden onchange="analyzePhoto(this)"/>
+      </div>
+      <div class="tone-result" id="toneResult" style="display:none">
+        <div class="tone-badge" id="toneBadge"></div>
+        <p id="toneMessage"></p>
+        <div class="color-chips" id="colorChips"></div>
+      </div>
+    </div>
+
+    <!-- Preferences Form -->
+    <div class="preferences-card card">
+      <h3 class="card-title">Your Preferences</h3>
+
+      <div class="form-group">
+        <label class="form-label">Style Vibe</label>
+        <div class="chip-group" id="styleChips">
+          <button type="button" class="chip active" data-val="casual" onclick="selectChip(this,'style')">Casual</button>
+          <button type="button" class="chip" data-val="formal" onclick="selectChip(this,'style')">Formal</button>
+          <button type="button" class="chip" data-val="ethnic" onclick="selectChip(this,'style')">Ethnic</button>
+          <button type="button" class="chip" data-val="party" onclick="selectChip(this,'style')">Party</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Occasion</label>
+        <div class="chip-group" id="occasionChips">
+          <button type="button" class="chip active" data-val="casual" onclick="selectChip(this,'occasion')">Daily Wear</button>
+          <button type="button" class="chip" data-val="office" onclick="selectChip(this,'occasion')">Office</button>
+          <button type="button" class="chip" data-val="wedding" onclick="selectChip(this,'occasion')">Wedding</button>
+          <button type="button" class="chip" data-val="festive" onclick="selectChip(this,'occasion')">Festival</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Body Type</label>
+        <select class="form-select" id="bodyType">
+          <option value="hourglass">Hourglass</option>
+          <option value="pear">Pear</option>
+          <option value="apple">Apple</option>
+          <option value="rectangle" selected>Rectangle</option>
+          <option value="inverted_triangle">Inverted Triangle</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Outfit Source</label>
+        <select class="form-select" id="outfitSource">
+          <option value="all" selected>Both Sources</option>
+          <option value="csv">Main Catalog (CSV)</option>
+          <option value="dataset">Dataset Folder Images</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Budget Range</label>
+        <div class="chip-group" id="budgetChips">
+          <button type="button" class="chip" data-val="low" onclick="selectChip(this,'budget')">₹ &lt; 2K</button>
+          <button type="button" class="chip active" data-val="medium" onclick="selectChip(this,'budget')">₹ 2K-5K</button>
+          <button type="button" class="chip" data-val="high" onclick="selectChip(this,'budget')">₹ &gt; 5K</button>
+        </div>
+      </div>
+
+           <button type="button" class="btn-primary full-width" onclick="getRecommendations()">
+        <span id="recBtnText">✦ Generate My Outfits</span>
+        <span id="recLoader" class="loader" style="display:none"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="results-area" id="resultsArea" style="display:none">
+    <div class="results-header">
+      <h3 class="results-title" id="resultsTitle"></h3>
+      <div class="tips-banner" id="tipsBanner"></div>
+    </div>
+    <div class="outfit-grid" id="outfitGrid"></div>
+  </div>
+</section>
+
+<!-- ── CATALOG ── -->
+<section class="section alt-bg" id="catalog">
+  <div class="section-header">
+    <span class="section-tag">02 — Collection</span>
+    <h2 class="section-title">Browse Catalog</h2>
+  </div>
+  <button
+    class="catalog-toggle-btn"
+    id="catalogToggleBtn"
+    type="button"
+    aria-expanded="false"
+    aria-controls="catalogDropdownPanel"
+    onclick="toggleCatalogDropdown()"
+  >
+    <span class="catalog-toggle-text">Open Catalog</span>
+    <span class="catalog-toggle-icon" id="catalogToggleIcon">▾</span>
+  </button>
+
+  <div class="catalog-collapsible" id="catalogDropdownPanel">
+    <div class="filter-bar">
+      <button type="button" class="filter-btn source-filter-btn active" onclick="filterCatalogSource('all', this)">Both Sources</button>
+      <button type="button" class="filter-btn source-filter-btn" onclick="filterCatalogSource('csv', this)">Main Catalog</button>
+      <button type="button" class="filter-btn source-filter-btn" onclick="filterCatalogSource('dataset', this)">Dataset Folder</button>
+    </div>
+    <div class="filter-bar">
+      <button type="button" class="filter-btn style-filter-btn active" onclick="filterCatalog('all', this)">All</button>
+      <button type="button" class="filter-btn style-filter-btn" onclick="filterCatalog('casual', this)">Casual</button>
+      <button type="button" class="filter-btn style-filter-btn" onclick="filterCatalog('formal', this)">Formal</button>
+      <button type="button" class="filter-btn style-filter-btn" onclick="filterCatalog('ethnic', this)">Ethnic</button>
+    </div>
+    <div class="catalog-dropdown-row">
+      <label class="catalog-dropdown-label" for="catalogDetailFilter">More Filters</label>
+      <select id="catalogDetailFilter" class="form-select catalog-dropdown" onchange="filterCatalogDetail(this.value)">
+        <option value="all" selected>All Items</option>
+        <option value="dress">Dress</option>
+        <option value="jacket">Jacket</option>
+        <option value="tshirt">T-Shirt</option>
+        <option value="uploaded">Uploaded Looks</option>
+      </select>
+    </div>
+    <div class="outfit-grid" id="catalogGrid"></div>
+  </div>
+</section>
+
+<!-- ── AR TRY-ON ── -->
+<section class="section" id="tryon">
+  <div class="section-header">
+    <span class="section-tag">03 — AR Try-On</span>
+    <h2 class="section-title">Virtual Mirror</h2>
+    <p class="section-sub">Experience outfits on yourself in real-time using Lens Studio AR technology.</p>
+  </div>
+
+  <div class="tryon-container">
+    <div class="tryon-card card">
+      <div class="tryon-visual">
+        <div class="camera-frame" id="cameraFrame">
+          <video id="cameraFeed" autoplay playsinline style="display:none"></video>
+          <canvas id="poseCanvas" style="display:none"></canvas>
+          <div class="camera-placeholder" id="cameraPlaceholder">
+            <div class="cam-icon">📷</div>
+            <p>Camera Preview</p>
+            <p class="cam-sub">Start the camera or launch AR Lens</p>
+          </div>
+          <div class="overlay-badge" id="overlayBadge" style="display:none">
+            <span class="live-dot"></span> LIVE
+          </div>
+        </div>
+
+        <div class="tryon-controls">
+          <button type="button" class="btn-icon" id="camBtn" onclick="toggleCamera()" title="Toggle Camera">
+            <span>📷</span>
+          </button>
+          <button type="button" class="btn-icon" onclick="captureSnapshot()" title="Snapshot">
+            <span>📸</span>
+          </button>
+          <button type="button" class="btn-icon" onclick="stopCamera()" title="Stop">
+            <span>⏹</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="lens-panel">
+        <h3 class="panel-title">Lens Studio AR Try-On</h3>
+        <p class="panel-desc">
+          Our AR try-on uses <strong>Snap Lens Studio</strong> for photorealistic cloth overlay with body tracking.
+        </p>
+
+        <div class="lens-slider-shell">
+          <div class="lens-slider-head">
+            <p class="lens-slider-label">Choose Lens</p>
+            <p class="lens-active-name" id="activeLensName">Loading lenses...</p>
+          </div>
+
+          <div class="lens-list-wrap">
+            <div class="lens-track" id="lensTrack"></div>
+          </div>
+
+          <div class="lens-slider-hint">Tap a lens from the list, then launch AR.</div>
+        </div>
+
+        <button type="button" class="btn-primary full-width lens-launch-btn" onclick="launchLens()">
+          <span>✦ Launch AR Try-On Lens</span>
+        </button>
+
+        <div class="webcam-fallback">
+          <p class="fallback-label">— or use webcam pose tracking —</p>
+          <button type="button" class="btn-outline full-width" onclick="startPoseTracking()">
+            Start OpenCV + MediaPipe Mirror
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected outfit for AR -->
+    <div class="selected-outfit-panel" id="selectedOutfitPanel" style="display:none">
+      <h4>Selected for Try-On</h4>
+      <div id="selectedOutfitContent"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SNAPSHOT MODAL ── -->
+<div class="modal-overlay" id="snapshotModal" style="display:none">
+  <div class="modal">
+    <button type="button" class="modal-close" onclick="closeSnapshot()">✕</button>
+    <h3>Your Look 💫</h3>
+    <img id="snapshotImg" src="" alt="Your outfit snapshot"/>
+    <button type="button" class="btn-primary" onclick="downloadSnapshot()">Download ↓</button>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="footer-content">
+    <span class="logo-text">StyleAI</span>
+    <p>MSc IT Project — AI Outfit Stylist + Virtual Try-On Mirror</p>
+    <p class="footer-sub">Built with Python · Flask · TensorFlow · OpenCV · MediaPipe · Lens Studio</p>
+  </div>
+</footer>
+
+<!-- MediaPipe -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
